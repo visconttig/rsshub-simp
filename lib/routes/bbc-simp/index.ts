@@ -1,4 +1,3 @@
-import { toSimplified } from './opencc';
 import { load } from 'cheerio';
 
 import type { Route } from '@/types';
@@ -6,10 +5,11 @@ import cache from '@/utils/cache';
 import ofetch from '@/utils/ofetch';
 import parser from '@/utils/rss-parser';
 
+import { toSimplified } from './opencc';
 import utils from './utils';
 
 export const route: Route = {
-path: '/:site?/:channel?',
+    path: '/:site?/:channel?',
     name: 'News',
     maintainers: ['HenryQW', 'DIYgod', 'pseudoyu'],
     handler,
@@ -96,13 +96,12 @@ async function handler(ctx) {
                                 description = utils.ProcessFeed($);
                         }
 
-return {
-    title: await toSimplified(item.title || ''),
-    description: await toSimplified(description || ''),
-    pubDate: item.pubDate || new Date().toUTCString(),
-    link: item.link?.replace('/trad', '/simp'),
-};
-
+                        return {
+                            title: await toSimplified(item.title || ''),
+                            description: await toSimplified(description || ''),
+                            pubDate: item.pubDate || new Date().toUTCString(),
+                            link: item.link?.replace('/trad', '/simp'),
+                        };
                     } catch {
                         return {} as Record<string, any>;
                     }
@@ -110,13 +109,11 @@ return {
             )
     );
 
-return {
-    title: await toSimplified(title),
-    link: link?.replace('/trad', '/simp'),
-    image: 'https://www.bbc.com/favicon.ico',
-    description: await toSimplified(title),
-    item: items.filter((item) => Object.keys(item).length > 0),
-};
-
-			
+    return {
+        title: await toSimplified(title),
+        link: link?.replace('/trad', '/simp'),
+        image: 'https://www.bbc.com/favicon.ico',
+        description: await toSimplified(title),
+        item: items.filter((item) => Object.keys(item).length > 0),
+    };
 }
