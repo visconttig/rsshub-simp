@@ -1,327 +1,103 @@
-# 🧠🔥 RSSHub-SIMP
+# 🔥 RSSHub-SIMP
 
-Because “just use Google Translate” is not an architecture.
+Turn Traditional Chinese RSS feeds into Simplified Chinese — automatically.
 
-<strong>Turn Traditional Chinese RSS feeds into Simplified Chinese.</strong><br/> <em>Reliably. Automatically. At scale. In the cloud. With Docker. And a bit of madness.</em> </p>
+Server-side RSS transformation. Dockerized. Cloud-deployed. No hacks.
 
-## 🤔 Why does this exist?
+## 🚀 What this does (fast version)
 
-You would think this problem was solved already.
-You would be wrong.
+📰 Fetches BBC Chinese RSS
 
-## The problem
+🔁 Converts Traditional → Simplified Chinese
 
-- You want BBC Chinese RSS feeds
-- You want them in Simplified Chinese
-> Without having to use a toggle button _***e v e r y***_ single time...
-- Your RSS reader (Inoreader, Feedly, etc.) does not transform content
+🧠 Preserves HTML (no broken markup)
 
-> Google Translate:
->> ❌ breaks HTML
+☁️ Runs in the cloud
 
->> ❌ is not deterministic
+🐳 Ships as a Docker container
 
->> ❌ is not automatable
-
->> ❌ is not an API you control
-
-> Browser extensions:
->> ❌ don’t work on RSS
-
->> ❌ don’t scale
-
->> ❌ stop working the moment you need them most
-
-### The conclusion
-
-👉 This is not a translation problem. This is a systems problem.
-
-So instead of duct-taping the client, we fix the source.
-
-## 🧠 The idea (a.k.a. “Do it properly”)
-
-Intercept the RSS at the source. Transform it server-side. Publish a clean feed.
-
-To do that:
-
-Take a battle-tested RSS engine (RSSHub)
-
-Extend it with a custom route
-
-Convert content inside the server
-
-Serve the result as a standard RSS feed
-
-Deploy it to the cloud
-
-Forget about it forever
-
-Simple.
-> (Reader, it was not simple.)
-
-## 🧩 What this project actually does
-
-### ✅ Adds a custom RSSHub route
-
-`/bbc-simp/:site?/:channel?`
-
+📡 Works with Inoreader / Feedly
 
 Example:
+
 `/bbc-simp/chinese`
 
+## 🤔 Why this exists
 
-### What happens:
+RSS readers do not translate content.
+Browser extensions don’t work on RSS.
+Google Translate breaks HTML.
 
-Fetch BBC Chinese RSS
+So instead of hacking the client…
 
-Fetch full article content
+Fix the feed at the source.
 
-Convert all text nodes to Simplified Chinese
-
-Preserve HTML structure
-
-Emit a clean, valid RSS feed
-
-No hacks. No regex crimes
-
-## 🛠️ How it works (step by step, no hand-waving)
-
-### 1️⃣ Start from a serious base
-
-Use RSSHub, the largest RSS network on Earth.
-
-Why?
-
-5,000+ routes
-
-Production-grade scraping
-
-Proven community
-
-MIT licensed
-
-Already solves 90% of the problem
-
-Reinventing RSS parsers is how bugs are born.
-
-### 2️⃣ Implement a custom route (the right way)
-
-Create lib/routes/bbc-simp
-
-Follow RSSHub’s route conventions
-
-Use dependency injection & cache utilities
-
-Respect existing architecture
-
-
-This isn’t a fork-and-pray job.
-
-This is an extension.
-
-### 3️⃣ Convert Chinese text safely
-
-Key design decision:
-
-👉 Do NOT translate. Convert script.
-
-Why?
-
-Traditional ↔ Simplified is _deterministic_
-
-No semantic drift
-
-No hallucinations
-
-No broken names
-
-No API dependency
-
-### The solution
-
-Install OpenCC (industry-standard Chinese script converter)
-
-Apply it only to text nodes
-
-Preserve HTML structure using Cheerio
-
-Avoid runtime crashes during build
-
-Result:
-
-📜 Clean HTML
-
-🈶 Correct Simplified Chinese
-
-🧘 Zero surprises
-
-### 4️⃣ Make Docker do the heavy lifting
-
-This project is Docker-first, not Docker-afterthought.
-
-## What’s inside:
-
-- Multi-stage Docker builds
-- Deterministic builds
-- Minimal runtime image
-- Explicit OS-level dependencies
-- No leaking node_modules
-- No “works on my machine” energy
-
-You can:
-```
-docker build -t rsshub-simp .
-docker run -p 1200:1200 rsshub-simp
-
-```
-
-
-And it just works.
-
-### 5️⃣ Deploy it like an adult
-
-Provision a cloud VM (Oracle Cloud)
-
-Configure networking
-
-Expose ports explicitly
-
-Run containers headless
-
-Test from inside and outside the instance
-
-Verify RSS readers can reach it
-
-
-This is not “localhost demo ware”.
-
-This is production infrastructure.
-
-## ☁️ Skills demonstrated (a non-exhaustive flex)
-### 🧠 Architecture
+## 🛠️ Why this is interesting (for engineers)
 
 Server-side content transformation
 
-Deterministic text processing
+Deterministic Chinese script conversion (OpenCC)
 
-Clean extension of an existing system
+Custom route on top of a large OSS project
 
-No client hacks
+Multi-stage Docker builds
 
-### 🐳 Docker
+Cloud VM deployment
 
-Multi-stage builds
+Real users, real constraints
 
-Slim production images
+## 🧠 How it works (optional deep dive)
+<details> <summary>Click if you’re curious (or hiring)</summary>
 
-Runtime vs build-time dependencies
+### Architecture
 
-Container debugging
+Extend RSSHub with a custom route
 
-Volume & filesystem reasoning
+Fetch article content
 
-### 🌐 Networking
+Convert text nodes only (preserve HTML)
 
-Port mapping
+Emit valid RSS
 
-Container vs host networking
+### Tech stack
 
-Local vs cloud routing
+Node.js / TypeScript
 
-RSS client connectivity constraints
+RSSHub internals
 
-### ☁️ Cloud
+OpenCC
 
-VM provisioning
+Cheerio
 
-Remote Docker builds
+Docker
 
-Stateless services
+Cloud VM (Oracle Cloud)
 
-Debugging in constrained environments
+### Why OpenCC
 
-### 🧪 Debugging
+Deterministic
 
-Build-time vs runtime failures
+No API calls
 
-Node + native binary integration
+No semantic drift
 
-Cross-platform issues (Windows ↔ Linux)
+Production-proven
 
-Deterministic reproduction of bugs
+</details>
 
-### 🧑‍💻 Full-Stack mindset
+## 🧡 Credits
 
-Backend logic
-
-Data transformation
-
-Infrastructure
-
-Deployment
-
-Observability
-
-## 🏁 Final result
-
-✅ RSSHub instance running in the cloud
-
-✅ Custom /bbc-simp route available publicly
-
-✅ Simplified Chinese output
-
-✅ Works in Inoreader / Feedly, etc
-
-✅ Zero manual steps after deployment
-
-
-✅ One URL → infinite articles
-
-This is the kind of project that looks small
-until you realize how many things can go wrong.
-
-And how many didn’t.
-
-## 🧡 Credits & respect where it’s due
-
-### ***This project is not possible without RSSHub***.
-
-### Original project
-
-***RSSHub***
-
-Author: DIYgod
-
-License: MIT
+This project is built on RSSHub, an incredible open-source project by DIYgod.
 
 Repo: https://github.com/DIYgod/RSSHub
 
 Docs: https://docs.rsshub.app
 
-RSSHub is a phenomenal piece of engineering and community effort.
-This project is an extension, not a replacement.
+License: MIT
 
-If you like this, you should absolutely:
+All respect to the original authors and contributors.
 
-⭐ Star RSSHub
+## 🏁 TL;DR
 
-🧡 Support its maintainers
-
-🧠 Learn from its architecture
-
-## 🚀 TL;DR (for recruiters skimming at 2am)
-
-Custom server-side RSS transformation
-
-Dockerized, cloud-deployed, production-ready
-
-Clean extension of a large open-source project
-
-Solves a real problem users actually have
-
-
-No shortcuts, no hacks, no excuses
-
-If you need someone who can take a vague problem
-and ship a clean, working system…
-hi 👋
+One URL in → Clean Simplified Chinese RSS out.
+Built with real infrastructure, not duct tape.
